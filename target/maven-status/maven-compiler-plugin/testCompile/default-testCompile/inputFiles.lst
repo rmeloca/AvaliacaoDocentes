@@ -1,6 +1,0 @@
-/data/workspace/AvaliacaoDocentes/src/test/java/br/unioeste/cascavel/avaliacaodocentes/persistence/GraphPersistenceTest.java
-/data/workspace/AvaliacaoDocentes/src/test/java/br/unioeste/cascavel/avaliacaodocentes/persistence/UsuarioPersistenceTest.java
-/data/workspace/AvaliacaoDocentes/src/test/java/br/unioeste/cascavel/avaliacaodocentes/persistence/AdministradorPersistenceTest.java
-/data/workspace/AvaliacaoDocentes/src/test/java/br/unioeste/cascavel/avaliacaodocentes/persistence/RDBMSConnectionTest.java
-/data/workspace/AvaliacaoDocentes/src/test/java/br/unioeste/cascavel/avaliacaodocentes/persistence/AlunoPersistenceTest.java
-/data/workspace/AvaliacaoDocentes/src/test/java/br/unioeste/cascavel/avaliacaodocentes/view/ViewTest.java
