@@ -5,6 +5,7 @@
  */
 package br.unioeste.cascavel.avaliacaodocentes.persistence;
 
+import br.unioeste.cascavel.avaliacaodocentes.controller.Exception.ItemNotFoundException;
 import br.unioeste.cascavel.avaliacaodocentes.model.Administrador;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,7 +25,13 @@ public class AdministradorPersistenceTest {
     public void testSomeMethod() {
         AdministradorPersistence administradorPersistence = new AdministradorPersistence();
         try {
-            administradorPersistence.create(new Administrador("admin", "admin", "Administrador", "rmeloca@gmail.com"));
+            Administrador administrador = new Administrador("admin", "admin", "Administrador", "rmeloca@gmail.com");
+            try {
+                administradorPersistence.retrieve(administrador);
+            } catch (ItemNotFoundException ex) {
+                administradorPersistence.create(administrador);
+                administradorPersistence.retrieve(administrador);
+            }
         } catch (Exception ex) {
             Logger.getLogger(AdministradorPersistenceTest.class.getName()).log(Level.SEVERE, null, ex);
             fail();

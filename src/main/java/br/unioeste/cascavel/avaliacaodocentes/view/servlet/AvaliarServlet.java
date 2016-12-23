@@ -36,7 +36,6 @@ public class AvaliarServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
         HttpSession session = req.getSession();
         Aluno aluno = (Aluno) session.getAttribute("usuario");
         String strDisciplina = req.getParameter("disciplina");

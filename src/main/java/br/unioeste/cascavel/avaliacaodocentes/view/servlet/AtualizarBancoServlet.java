@@ -5,43 +5,37 @@
  */
 package br.unioeste.cascavel.avaliacaodocentes.view.servlet;
 
+import br.unioeste.cascavel.avaliacaodocentes.model.Administrador;
 import java.io.IOException;
+import java.io.InputStream;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 
 /**
  *
  * @author romulo
  */
-@WebServlet(name = "Options", urlPatterns = {"/Options"})
-public class OptionsServlet extends HttpServlet {
+@WebServlet(name = "AtualizarBanco", urlPatterns = {"/AtualizarBanco"})
+public class AtualizarBancoServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession(false);
-        String option = req.getParameter("option");
-        switch (option) {
-            case "logout":
-                session.removeAttribute("usuario");
-                resp.sendRedirect("");
-                break;
-        }
+        resp.sendRedirect("");
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession(false);
-        String option = req.getParameter("option");
-        switch (option) {
-            case "logout":
-                session.removeAttribute("usuario");
-                resp.sendRedirect("");
-                break;
-        }
+        Part part = req.getPart("arquivo");
+        InputStream inputStream = part.getInputStream();
+        HttpSession session = req.getSession();
+        Administrador administrador = (Administrador) session.getAttribute("usuario");
+        administrador.atualizarDados(inputStream);
+        inputStream.close();
     }
-
 }
