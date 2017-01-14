@@ -91,7 +91,8 @@ public abstract class GraphPersistence<T extends Persistable> implements Persist
                 } else {
                     createVertex = this.visitedItemsInRecursion.get(child);
                 }
-                vertex.addEdge("edge_" + entry.getKey(), createVertex);
+                Edge edge = vertex.addEdge("edge_" + entry.getKey(), createVertex);
+                edge.setProperty("vinculo", "simples");
             } else if (entry.getValue() instanceof Collection) {
                 try {
                     Collection<Persistable> cast = (Collection<Persistable>) entry.getValue();
@@ -102,7 +103,8 @@ public abstract class GraphPersistence<T extends Persistable> implements Persist
                         } else {
                             createVertex = this.visitedItemsInRecursion.get(child);
                         }
-                        vertex.addEdge("edge_" + entry.getKey(), createVertex);
+                        Edge edge = vertex.addEdge("edge_" + entry.getKey(), createVertex);
+                        edge.setProperty("vinculo", "colecao");
                     }
                 } catch (ClassCastException ex) {
                     System.err.println("Classes devem implementar Persistable");
@@ -124,6 +126,7 @@ public abstract class GraphPersistence<T extends Persistable> implements Persist
                     }
                     Edge edge = vertex.addEdge("edge_" + entry.getKey(), keyVertex);
                     edge.setProperty("link_" + entry.getKey(), valueVertex);
+                    edge.setProperty("vinculo", "map");
                 }
             }
         }
@@ -213,37 +216,44 @@ public abstract class GraphPersistence<T extends Persistable> implements Persist
             } else {
                 objectRepresentation = getFill(child);
             }
-            String classe = edge.getLabel().replaceFirst("edge_", "");
-            Set<String> keyMap = edge.getPropertyKeys();
-            if (keyMap.size() > 0) {
-                for (String key : keyMap) {
-                    Map property;
-                    if (!fill.containsKey(classe)) {
-                        property = new HashMap<>();
-                        fill.put(classe, property);
-                    } else {
-                        property = (Map) fill.get(classe);
-                    }
-                    Vertex valueChild = edge.getProperty(key);
-                    Map<String, Object> childFill;
-                    if (this.retrievedItemsInRecursion.containsKey(valueChild)) {
-                        childFill = this.retrievedItemsInRecursion.get(valueChild);
-                    } else {
-                        childFill = getFill(valueChild);
-                    }
-                    property.put(objectRepresentation, childFill);
+            String field = edge.getLabel().replaceFirst("edge_", "");
+
+            String vinculo = edge.getProperty("vinculo");
+            switch (vinculo) {
+                case "simples":
+                    fill.put(field, objectRepresentation);
                     break;
-                }
-            } else if (!fill.containsKey(classe)) {
-                fill.put(classe, objectRepresentation);
-            } else if (fill.get(classe) instanceof Collection) {
-                Collection property = (Collection) fill.get(classe);
-                property.add(objectRepresentation);
-            } else {
-                Object get = fill.get(classe);
-                Collection property = new ArrayList();
-                property.add(get);
-                fill.put(classe, property);
+                case "colecao":
+                    Collection collection;
+                    if (!fill.containsKey(field)) {
+                        collection = new ArrayList();
+                        fill.put(field, collection);
+                    } else {
+                        collection = (Collection) fill.get(field);
+                    }
+                    collection.add(objectRepresentation);
+                    break;
+                case "map":
+                    Set<String> keyMap = edge.getPropertyKeys();
+                    for (String key : keyMap) {
+                        Map map;
+                        if (!fill.containsKey(field)) {
+                            map = new HashMap<>();
+                            fill.put(field, map);
+                        } else {
+                            map = (Map) fill.get(field);
+                        }
+                        Vertex valueChild = edge.getProperty(key);
+                        Map<String, Object> childFill;
+                        if (this.retrievedItemsInRecursion.containsKey(valueChild)) {
+                            childFill = this.retrievedItemsInRecursion.get(valueChild);
+                        } else {
+                            childFill = getFill(valueChild);
+                        }
+                        map.put(objectRepresentation, childFill);
+                        break;
+                    }
+                    break;
             }
         }
         return fill;

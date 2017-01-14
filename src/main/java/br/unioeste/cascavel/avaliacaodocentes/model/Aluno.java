@@ -89,6 +89,7 @@ public class Aluno extends Usuario {
     @Override
     public void fillEntity(Map<String, Object> values) {
         super.fillEntity(values);
+
         Collection<Map<String, Object>> matriculasFill = (Collection<Map<String, Object>>) values.get("matriculas");
         if (matriculasFill == null) {
             return;

@@ -80,7 +80,7 @@ public class Administrador extends Usuario {
                         break;
                 }
             } catch (Exception ex) {
-                System.err.println(ex.getMessage());
+                System.err.println(ex);
             }
         }
         bufferedReader.close();
