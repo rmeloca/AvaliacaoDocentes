@@ -5,6 +5,7 @@
  */
 package br.unioeste.cascavel.avaliacaodocentes.model;
 
+import br.unioeste.cascavel.avaliacaodocentes.persistence.Fill;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -84,6 +85,12 @@ public class Aluno extends Usuario {
         Map<String, Object> map = super.getValues();
         map.put("matriculas", matriculas);
         return map;
+    }
+
+    public void fillEntitityTeste(Fill fill) {
+        String nome = (String) fill.getAttribute("nome");
+        String matricula = (String) fill.getAttribute("matricula");
+        
     }
 
     @Override

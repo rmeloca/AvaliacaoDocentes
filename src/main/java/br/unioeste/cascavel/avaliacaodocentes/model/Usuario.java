@@ -5,6 +5,7 @@
  */
 package br.unioeste.cascavel.avaliacaodocentes.model;
 
+import br.unioeste.cascavel.avaliacaodocentes.persistence.Fill;
 import br.unioeste.cascavel.avaliacaodocentes.persistence.Persistable;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -111,6 +112,16 @@ public abstract class Usuario implements Persistable, Serializable {
         if (loggedIn != null) {
             this.loggedIn = loggedIn;
         }
+    }
+
+    public Fill getValuesTeste() {
+        Fill fill = new Fill();
+        fill.addAttribute("nome", nome);
+        return fill;
+    }
+
+    public void fillEntitityTeste(Fill fill) {
+        String nome = (String) fill.getAttribute("nome");
     }
 
     @Override

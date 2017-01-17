@@ -3,18 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.unioeste.cascavel.avaliacaodocentes.persistence;
+package br.unioeste.cascavel.avaliacaodocentes.persistence.Exception;
 
 /**
  *
  * @author romulo
  */
-public interface Persistable {
+public class KeyNotFoundException extends Exception {
 
-    public Fill getPrimaryKey();
-
-    public Fill getValues();
-
-    public void fillEntity(Fill fill);
+    public KeyNotFoundException(String message) {
+        super(message);
+    }
 
 }

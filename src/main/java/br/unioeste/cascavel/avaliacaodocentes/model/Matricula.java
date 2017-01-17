@@ -5,6 +5,7 @@
  */
 package br.unioeste.cascavel.avaliacaodocentes.model;
 
+import br.unioeste.cascavel.avaliacaodocentes.persistence.Fill;
 import br.unioeste.cascavel.avaliacaodocentes.persistence.Persistable;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -185,4 +186,52 @@ public class Matricula implements Persistable, Serializable {
         this.disciplinaTemProfessor.putAll(disciplinaTemProfessor);
     }
 
+    public void fillEntityTest(Fill fill) {
+        Iterable<Fill> avaliacoesFill = fill.getCollection("avaliacoes");
+        if (avaliacoesFill == null) {
+            return;
+        }
+        Collection<Avaliacao> avaliacoes = new ArrayList<>();
+        for (Fill avaliacaoFill : avaliacoesFill) {
+            try {
+                Map<String, Object> disciplinaFill = (Map<String, Object>) avaliacaoFill.getAttribute("disciplina");
+                String codigo = (String) disciplinaFill.get("codigo");
+                Disciplina disciplina = new Disciplina(codigo);
+                disciplina.fillEntity(disciplinaFill);
+                Map<String, Object> professorFill = (Map<String, Object>) avaliacaoFill.getAttribute("professor");
+                String login = (String) professorFill.get("login");
+                Professor professor = new Professor(login);
+                professor.fillEntity(professorFill);
+                Avaliacao avaliacao = new Avaliacao(this, disciplina, professor);
+                avaliacao.fillEntity(null);
+                avaliacoes.add(avaliacao);
+            } catch (Exception ex) {
+                Logger.getLogger(Matricula.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        this.avaliacoes.clear();
+        this.avaliacoes.addAll(avaliacoes);
+
+        Map<Disciplina, Professor> disciplinaTemProfessor = new HashMap<>();
+        Iterable<Map.Entry<Fill, Fill>> disciplinaTemProfessorFill = fill.getMap("disciplinaTemProfessor");
+        for (Map.Entry<Fill, Fill> entry : disciplinaTemProfessorFill) {
+            
+        }
+        for (Map.Entry<Fill, Fill> entry : disciplinaTemProfessorFill) {
+            try {
+                String codigo = (String) entry.getKey().get("codigo");
+                Disciplina disciplina = new Disciplina(codigo);
+                disciplina.fillEntity(entry.getKey());
+                String login = (String) entry.getValue().get("login");
+                Professor professor;
+                professor = new Professor(login);
+                professor.fillEntity(entry.getValue());
+                disciplinaTemProfessor.put(disciplina, professor);
+            } catch (Exception ex) {
+                Logger.getLogger(Matricula.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        this.disciplinaTemProfessor.clear();
+        this.disciplinaTemProfessor.putAll(disciplinaTemProfessor);
+    }
 }
