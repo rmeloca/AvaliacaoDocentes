@@ -83,45 +83,35 @@ public abstract class Usuario implements Persistable, Serializable {
     }
 
     @Override
-    public Map<String, Object> getPrimaryKey() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("login", login);
-        return map;
+    public Fill getPrimaryKey() {
+        Fill fill = new Fill();
+        fill.addAttribute("login", login);
+        return fill;
     }
 
     @Override
-    public Map<String, Object> getValues() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("login", login);
-        map.put("senha", senha);
-        map.put("nome", nome);
-        map.put("email", email);
-        map.put("loggedIn", loggedIn);
-        return map;
+    public Fill getValues() {
+        Fill fill = new Fill();
+        fill.addAttribute("login", login);
+        fill.addAttribute("senha", senha);
+        fill.addAttribute("nome", nome);
+        fill.addAttribute("email", email);
+        fill.addAttribute("loggedIn", loggedIn);
+        return fill;
     }
 
     @Override
-    public void fillEntity(Map<String, Object> values) {
-        String nome = (String) values.get("nome");
-        String senha = (String) values.get("senha");
-        String email = (String) values.get("email");
-        Boolean loggedIn = (Boolean) values.get("loggedIn");
+    public void fillEntity(Fill fill) {
+        String nome = fill.getString("nome");
+        String senha = fill.getString("senha");
+        String email = fill.getString("email");
+        Boolean loggedIn = (Boolean) fill.getAttribute("loggedIn");
         this.nome = nome;
         this.senha = senha;
         this.email = email;
         if (loggedIn != null) {
             this.loggedIn = loggedIn;
         }
-    }
-
-    public Fill getValuesTeste() {
-        Fill fill = new Fill();
-        fill.addAttribute("nome", nome);
-        return fill;
-    }
-
-    public void fillEntitityTeste(Fill fill) {
-        String nome = (String) fill.getAttribute("nome");
     }
 
     @Override

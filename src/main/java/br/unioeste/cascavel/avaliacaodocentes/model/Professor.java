@@ -5,9 +5,9 @@
  */
 package br.unioeste.cascavel.avaliacaodocentes.model;
 
+import br.unioeste.cascavel.avaliacaodocentes.persistence.Fill;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -62,10 +62,10 @@ public class Professor extends Usuario {
     }
 
     @Override
-    public Map<String, Object> getValues() {
-        Map<String, Object> map = super.getValues();
-        map.put("avaliacoes", avaliacoes);
-        return map;
+    public Fill getValues() {
+        Fill fill = super.getValues();
+        fill.addAttribute("avaliacoes", avaliacoes);
+        return fill;
     }
 
 }

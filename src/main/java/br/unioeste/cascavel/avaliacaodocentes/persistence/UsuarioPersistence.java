@@ -6,7 +6,6 @@
 package br.unioeste.cascavel.avaliacaodocentes.persistence;
 
 import br.unioeste.cascavel.avaliacaodocentes.model.Usuario;
-import java.util.Map;
 
 /**
  *
@@ -19,9 +18,9 @@ public class UsuarioPersistence extends GraphPersistence<Usuario> {
     }
 
     @Override
-    protected Usuario buildEntity(Map<String, Object> primaryKey) {
+    protected Usuario buildEntity(Fill primaryKey) {
         Usuario usuario;
-        String login = (String) primaryKey.get("login");
+        String login = primaryKey.getString("login");
         try {
             usuario = new Usuario(login) {
             };

@@ -5,6 +5,7 @@
  */
 package br.unioeste.cascavel.avaliacaodocentes.model;
 
+import br.unioeste.cascavel.avaliacaodocentes.persistence.Fill;
 import br.unioeste.cascavel.avaliacaodocentes.persistence.Persistable;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -114,34 +115,32 @@ public class Avaliacao implements Serializable, Persistable {
     }
 
     @Override
-    public Map<String, Object> getPrimaryKey() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("matricula", this.matricula);
-        map.put("disciplina", this.disciplina);
-        map.put("professor", this.professor);
-        return map;
+    public Fill getPrimaryKey() {
+        Fill fill = new Fill();
+        fill.addAttribute("matricula", this.matricula);
+        fill.addAttribute("disciplina", this.disciplina);
+        fill.addAttribute("professor", this.professor);
+        return fill;
     }
 
     @Override
-    public Map<String, Object> getValues() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("criterioTemNota", this.criterioTemNota);
-        map.put("observacoes", this.observacoes);
-        map.put("lida", this.lida);
-        return map;
+    public Fill getValues() {
+        Fill fill = new Fill();
+        fill.addAttribute("criterioTemNota", this.criterioTemNota);
+        fill.addAttribute("observacoes", this.observacoes);
+        fill.addAttribute("lida", this.lida);
+        return fill;
     }
 
     @Override
-    public void fillEntity(Map<String, Object> values) {
-        this.observacoes = (String) values.get("observacoes");
-        this.lida = (boolean) values.get("lida");
-        Map<Criterio, Integer> criterioTemnota = new HashMap<>();
-        Map<String, Integer> criterioTemNotaFill = (Map<String, Integer>) values.get("criterioTemNota");
-        for (Map.Entry<String, Integer> entry : criterioTemNotaFill.entrySet()) {
-            criterioTemnota.put(Criterio.valueOf(entry.getKey()), entry.getValue());
-        }
+    public void fillEntity(Fill fill) {
+        this.observacoes = fill.getString("observacoes");
+        this.lida = (boolean) fill.getAttribute("lida");
         this.criterioTemNota.clear();
-        this.criterioTemNota.putAll(criterioTemnota);
+        Map<String, Integer> criterioTemNotaFill = (Map<String, Integer>) fill.getAttribute("criterioTemNota");
+        for (Map.Entry<String, Integer> entry : criterioTemNotaFill.entrySet()) {
+            this.criterioTemNota.put(Criterio.valueOf(entry.getKey()), entry.getValue());
+        }
     }
 
 }

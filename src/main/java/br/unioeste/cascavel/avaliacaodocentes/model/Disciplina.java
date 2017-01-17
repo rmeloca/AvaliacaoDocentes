@@ -5,6 +5,7 @@
  */
 package br.unioeste.cascavel.avaliacaodocentes.model;
 
+import br.unioeste.cascavel.avaliacaodocentes.persistence.Fill;
 import br.unioeste.cascavel.avaliacaodocentes.persistence.Persistable;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -42,23 +43,23 @@ public class Disciplina implements Persistable, Serializable {
     }
 
     @Override
-    public Map<String, Object> getValues() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("codigo", codigo);
-        map.put("nome", nome);
-        return map;
+    public Fill getValues() {
+        Fill fill = new Fill();
+        fill.addAttribute("codigo", codigo);
+        fill.addAttribute("nome", nome);
+        return fill;
     }
 
     @Override
-    public Map<String, Object> getPrimaryKey() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("codigo", codigo);
-        return map;
+    public Fill getPrimaryKey() {
+        Fill fill = new Fill();
+        fill.addAttribute("codigo", codigo);
+        return fill;
     }
 
     @Override
-    public void fillEntity(Map<String, Object> values) {
-        String nome = (String) values.get("nome");
+    public void fillEntity(Fill fill) {
+        String nome = fill.getString("nome");
         this.nome = nome;
     }
 

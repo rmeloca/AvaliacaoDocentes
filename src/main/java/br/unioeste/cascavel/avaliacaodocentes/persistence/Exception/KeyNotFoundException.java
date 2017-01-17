@@ -15,4 +15,8 @@ public class KeyNotFoundException extends Exception {
         super(message);
     }
 
+    public KeyNotFoundException() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

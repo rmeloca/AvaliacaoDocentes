@@ -35,8 +35,8 @@ public class GraphPersistenceTest {
     public void testSomeMethod() {
         GraphPersistence<Aluno> graphPersistence = new GraphPersistence<Aluno>(Aluno.class) {
             @Override
-            protected Aluno buildEntity(Map<String, Object> primaryKey) {
-                String login = (String) primaryKey.get("login");
+            protected Aluno buildEntity(Fill primaryKey) {
+                String login = (String) primaryKey.getAttribute("login");
                 try {
                     Aluno aluno = new Aluno(login);
                     return aluno;
@@ -116,12 +116,12 @@ public class GraphPersistenceTest {
     public void testeConditions() {
         GraphPersistence<Matricula> graphPersistence = new GraphPersistence<Matricula>(Matricula.class) {
             @Override
-            protected Matricula buildEntity(Map<String, Object> primaryKey) {
+            protected Matricula buildEntity(Fill primaryKey) {
                 try {
-                    int ano = (int) primaryKey.get("ano");
-                    int semestre = (int) primaryKey.get("semestre");
-                    Map<String, Object> alunovalues = (Map<String, Object>) primaryKey.get("aluno");
-                    String login = (String) alunovalues.get("login");
+                    int ano = (int) primaryKey.getAttribute("ano");
+                    int semestre = (int) primaryKey.getAttribute("semestre");
+                    Fill alunovalues = (Fill) primaryKey.getAttribute("aluno");
+                    String login = (String) alunovalues.getAttribute("login");
                     Aluno aluno = new Aluno(login);
                     aluno.fillEntity(alunovalues);
                     Matricula matricula = new Matricula(ano, semestre, aluno);

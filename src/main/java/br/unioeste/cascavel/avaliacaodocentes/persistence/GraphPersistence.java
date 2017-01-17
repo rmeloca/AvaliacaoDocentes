@@ -31,7 +31,7 @@ public abstract class GraphPersistence<T extends Persistable> implements Persist
     private final OrientGraph graph;
     private final Class<T> classe;
     private final Map<Persistable, Vertex> visitedItemsInRecursion;
-    private final Map<Vertex, Map<String, Object>> retrievedItemsInRecursion;
+    private final Map<Vertex, Fill> retrievedItemsInRecursion;
     private final Set<Vertex> deletedItemsInRecursion;
 
     public GraphPersistence(Class<T> classe) {
@@ -42,7 +42,7 @@ public abstract class GraphPersistence<T extends Persistable> implements Persist
         this.deletedItemsInRecursion = new HashSet<>();
     }
 
-    protected abstract T buildEntity(Map<String, Object> primaryKey);
+    protected abstract T buildEntity(Fill primaryKey);
 
     @Override
     public Collection<T> list() {
@@ -50,7 +50,7 @@ public abstract class GraphPersistence<T extends Persistable> implements Persist
             Collection<T> lista = new ArrayList<>();
             Iterable<Vertex> vertices = graph.getVerticesOfClass(classe.getSimpleName());
             for (Vertex vertex : vertices) {
-                Map<String, Object> fill = getFill(vertex);
+                Fill fill = getFill(vertex);
                 T entity = buildEntity(fill);
                 entity.fillEntity(fill);
                 lista.add(entity);
@@ -70,10 +70,10 @@ public abstract class GraphPersistence<T extends Persistable> implements Persist
     }
 
     private Vertex createVertex(Persistable persistable) {
-        Map<String, Object> values = persistable.getValues();
+        Fill fill = persistable.getValues();
         OrientVertex vertex = graph.addVertex("class:" + persistable.getClass().getSimpleName());
         this.visitedItemsInRecursion.put(persistable, vertex);
-        for (Map.Entry<String, Object> entry : values.entrySet()) {
+        for (Map.Entry<String, Object> entry : fill) {
             if (entry.getValue() == null) {
             } else if (entry.getValue() instanceof Number) {
                 vertex.setProperty(entry.getKey(), entry.getValue());
@@ -136,8 +136,8 @@ public abstract class GraphPersistence<T extends Persistable> implements Persist
     private Collection<StringBuilder> getConditions(Persistable persistable) {
         Collection<StringBuilder> conditions = new ArrayList<>();
         StringBuilder condition;
-        Map<String, Object> values = persistable.getPrimaryKey();
-        for (Map.Entry<String, Object> entry : values.entrySet()) {
+        Fill fill = persistable.getPrimaryKey();
+        for (Map.Entry<String, Object> entry : fill) {
             condition = new StringBuilder();
             if (entry.getValue().getClass().isPrimitive()) {
                 condition.append(entry.getKey());
@@ -198,18 +198,18 @@ public abstract class GraphPersistence<T extends Persistable> implements Persist
         return resultado;
     }
 
-    private Map<String, Object> getFill(Vertex vertex) {
-        Map<String, Object> fill = new HashMap<>();
+    private Fill getFill(Vertex vertex) {
+        Fill fill = new Fill();
         this.retrievedItemsInRecursion.put(vertex, fill);
         Set<String> propertyKeys = vertex.getPropertyKeys();
         for (String propertyKey : propertyKeys) {
             Object property = vertex.getProperty(propertyKey);
-            fill.put(propertyKey, property);
+            fill.addAttribute(propertyKey, property);
         }
 
         Iterable<Edge> edges = vertex.getEdges(Direction.OUT);
         for (Edge edge : edges) {
-            Map<String, Object> objectRepresentation;
+            Fill objectRepresentation;
             Vertex child = edge.getVertex(Direction.IN);
             if (this.retrievedItemsInRecursion.containsKey(child)) {
                 objectRepresentation = this.retrievedItemsInRecursion.get(child);
@@ -221,15 +221,15 @@ public abstract class GraphPersistence<T extends Persistable> implements Persist
             String vinculo = edge.getProperty("vinculo");
             switch (vinculo) {
                 case "simples":
-                    fill.put(field, objectRepresentation);
+                    fill.addAttribute(field, objectRepresentation);
                     break;
                 case "colecao":
                     Collection collection;
                     if (!fill.containsKey(field)) {
                         collection = new ArrayList();
-                        fill.put(field, collection);
+                        fill.addAttribute(field, collection);
                     } else {
-                        collection = (Collection) fill.get(field);
+                        collection = (Collection) fill.getAttribute(field);
                     }
                     collection.add(objectRepresentation);
                     break;
@@ -239,12 +239,12 @@ public abstract class GraphPersistence<T extends Persistable> implements Persist
                         Map map;
                         if (!fill.containsKey(field)) {
                             map = new HashMap<>();
-                            fill.put(field, map);
+                            fill.addAttribute(field, map);
                         } else {
-                            map = (Map) fill.get(field);
+                            map = (Map) fill.getAttribute(field);
                         }
                         Vertex valueChild = edge.getProperty(key);
-                        Map<String, Object> childFill;
+                        Fill childFill;
                         if (this.retrievedItemsInRecursion.containsKey(valueChild)) {
                             childFill = this.retrievedItemsInRecursion.get(valueChild);
                         } else {
@@ -265,7 +265,7 @@ public abstract class GraphPersistence<T extends Persistable> implements Persist
             this.retrievedItemsInRecursion.clear();
             Iterable<Vertex> resultado = retrieveVertex(t);
             for (Vertex vertex : resultado) {
-                Map<String, Object> fill = getFill(vertex);
+                Fill fill = getFill(vertex);
                 T entity = buildEntity(fill);
                 entity.fillEntity(fill);
                 return entity;

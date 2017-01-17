@@ -81,40 +81,29 @@ public class Aluno extends Usuario {
     }
 
     @Override
-    public Map<String, Object> getValues() {
-        Map<String, Object> map = super.getValues();
-        map.put("matriculas", matriculas);
-        return map;
-    }
-
-    public void fillEntitityTeste(Fill fill) {
-        String nome = (String) fill.getAttribute("nome");
-        String matricula = (String) fill.getAttribute("matricula");
-        
+    public Fill getValues() {
+        Fill fill = super.getValues();
+        fill.addAttribute("matriculas", matriculas);
+        return fill;
     }
 
     @Override
-    public void fillEntity(Map<String, Object> values) {
-        super.fillEntity(values);
+    public void fillEntity(Fill fill) {
+        super.fillEntity(fill);
 
-        Collection<Map<String, Object>> matriculasFill = (Collection<Map<String, Object>>) values.get("matriculas");
-        if (matriculasFill == null) {
-            return;
-        }
-        Collection<Matricula> matriculas = new ArrayList<>();
-        for (Map<String, Object> matriculaFill : matriculasFill) {
-            int ano = (int) matriculaFill.get("ano");
-            int semestre = (int) matriculaFill.get("semestre");
+        Iterable<Fill> matriculasFill = fill.getCollection("matriculas");
+        this.matriculas.clear();
+        for (Fill matriculaFill : matriculasFill) {
+            int ano = (int) matriculaFill.getAttribute("ano");
+            int semestre = (int) matriculaFill.getAttribute("semestre");
             try {
                 Matricula matricula = new Matricula(ano, semestre, this);
                 matricula.fillEntity(matriculaFill);
-                matriculas.add(matricula);
+                this.matriculas.add(matricula);
             } catch (Exception ex) {
                 Logger.getLogger(Aluno.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        this.matriculas.clear();
-        this.matriculas.addAll(matriculas);
     }
 
 }

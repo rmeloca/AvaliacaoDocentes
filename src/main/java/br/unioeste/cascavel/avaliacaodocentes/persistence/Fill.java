@@ -27,18 +27,27 @@ public class Fill implements Iterable<Entry<String, Object>> {
         this.valores.put(key, value);
     }
 
-    public Object getAttribute(String key) throws KeyNotFoundException {
-        if (!valores.containsKey(key)) {
-            throw new KeyNotFoundException();
-        }
+    public Object getAttribute(String key) {
         return valores.get(key);
     }
 
-    public Iterable<Fill> getCollection(String key) throws KeyNotFoundException, ClassCastException {
+    protected boolean containsKey(String key) {
+        return this.valores.containsKey(key);
+    }
+
+    public String getString(String key) {
+        return (String) key;
+    }
+
+    public Fill getFill(String key) {
+        return (Fill) getAttribute(key);
+    }
+
+    public Iterable<Fill> getCollection(String key) {
         return (Iterable<Fill>) getAttribute(key);
     }
 
-    public Iterable<Entry<Fill, Fill>> getMap(String key) throws KeyNotFoundException, ClassCastException {
+    public Iterable<Entry<Fill, Fill>> getMap(String key) {
         Map<Fill, Fill> map = (Map<Fill, Fill>) getAttribute(key);
         Iterable iterable = new Iterable() {
             @Override
@@ -53,5 +62,6 @@ public class Fill implements Iterable<Entry<String, Object>> {
     public Iterator<Entry<String, Object>> iterator() {
         return this.valores.entrySet().iterator();
     }
+
 
 }

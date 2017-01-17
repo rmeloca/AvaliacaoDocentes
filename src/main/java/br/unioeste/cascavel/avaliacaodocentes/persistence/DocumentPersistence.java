@@ -10,7 +10,6 @@ import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.iterator.ORecordIteratorClass;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -30,24 +29,21 @@ public abstract class DocumentPersistence<T extends Persistable> implements Pers
         this.db = new ODatabaseDocumentTx("remote:localhost/AvaliacaoDocentes").open("root", "root");
     }
 
-    protected abstract T buildEntity(Map<String, Object> primaryKey);
+    protected abstract T buildEntity(Fill primaryKey);
 
     @Override
     public List<T> list() {
         List<T> lista = new ArrayList<>();
         ORecordIteratorClass<ODocument> browseClass = db.browseClass(classe.getSimpleName());
-        Map<String, Object> values;
+        Fill fill = new Fill();
         for (ODocument document : browseClass) {
-            values = new HashMap<>();
-//            System.out.println(Arrays.toString(document.getDirtyFields()));
-//            Object field = document.field("teste");
             Iterator<Map.Entry<String, Object>> iterator = document.iterator();
             while (iterator.hasNext()) {
                 Map.Entry<String, Object> next = iterator.next();
-                values.put(next.getKey(), next.getValue());
+                fill.addAttribute(next.getKey(), next.getValue());
             }
-            T entity = buildEntity(values);
-            entity.fillEntity(values);
+            T entity = buildEntity(fill);
+            entity.fillEntity(fill);
             lista.add(entity);
         }
         return lista;
@@ -55,7 +51,7 @@ public abstract class DocumentPersistence<T extends Persistable> implements Pers
 
     @Override
     public void create(T t) {
-        Map<String, Object> values = t.getValues();
+        Fill fill = t.getValues();
         ODocument doc = new ODocument(t.getClass().getSimpleName());
         doc.field("name", "Luke");
         doc.field("surname", "Skywalker");

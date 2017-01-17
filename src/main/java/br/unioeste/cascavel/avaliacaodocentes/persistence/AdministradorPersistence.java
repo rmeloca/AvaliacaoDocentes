@@ -6,7 +6,6 @@
 package br.unioeste.cascavel.avaliacaodocentes.persistence;
 
 import br.unioeste.cascavel.avaliacaodocentes.model.Administrador;
-import java.util.Map;
 
 /**
  *
@@ -19,8 +18,8 @@ public class AdministradorPersistence extends GraphPersistence<Administrador> {
     }
 
     @Override
-    protected Administrador buildEntity(Map<String, Object> primaryKey) {
-        String login = (String) primaryKey.get("login");
+    protected Administrador buildEntity(Fill primaryKey) {
+        String login = primaryKey.getString("login");
         try {
             return new Administrador(login);
         } catch (Exception ex) {
