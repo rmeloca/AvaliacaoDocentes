@@ -61,7 +61,7 @@ public class Administrador extends Usuario {
                         disciplinaController.add(new Disciplina(fields[1], fields[2]));
                         break;
                     case "Matricula":
-                        Aluno aluno = (Aluno) alunoController.get(new Aluno(fields[3]));
+                        Aluno aluno = alunoController.get(new Aluno(fields[3]));
                         Matricula matricula;
                         int ano = Integer.valueOf(fields[1]);
                         int semestre = Integer.valueOf(fields[2]);
@@ -71,8 +71,8 @@ public class Administrador extends Usuario {
                             matricula = new Matricula(ano, semestre, aluno);
                             aluno.matricular(matricula);
                         }
-                        Disciplina disciplina = (Disciplina) disciplinaController.get(new Disciplina(fields[4]));
-                        Professor professor = (Professor) professorController.get(new Professor(fields[5]));
+                        Disciplina disciplina = disciplinaController.get(new Disciplina(fields[4]));
+                        Professor professor = professorController.get(new Professor(fields[5]));
                         matricula.addDisciplina(disciplina, professor);
                         alunoController.update(aluno);
                         break;

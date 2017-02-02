@@ -6,6 +6,7 @@
 package br.unioeste.cascavel.avaliacaodocentes.model;
 
 import br.unioeste.cascavel.avaliacaodocentes.controller.AdministradorController;
+import br.unioeste.cascavel.avaliacaodocentes.controller.Exception.ItemNotFoundException;
 import java.io.InputStream;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -23,11 +24,14 @@ public class AdministradorTest {
     public void testSomeMethod() {
         InputStream inputStream = getClass().getResourceAsStream("/users.txt");
         AdministradorController administradorController = new AdministradorController();
-        Administrador administrador;
         try {
-            administrador = new Administrador("admin");
-            administradorController.add(administrador);
-            administrador = administradorController.get(administrador);
+            Administrador administrador = new Administrador("admin");
+            try {
+                administrador = administradorController.get(administrador);
+            } catch (ItemNotFoundException ex) {
+                administradorController.add(administrador);
+                administrador = administradorController.get(administrador);
+            }
             administrador.atualizarDados(inputStream);
             inputStream.close();
         } catch (Exception ex) {

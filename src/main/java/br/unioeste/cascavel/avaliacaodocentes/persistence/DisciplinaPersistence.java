@@ -5,10 +5,23 @@
  */
 package br.unioeste.cascavel.avaliacaodocentes.persistence;
 
+import br.unioeste.cascavel.avaliacaodocentes.model.Disciplina;
+
 /**
  *
  * @author romulo
  */
-public class DisciplinaPersistence extends SerializePersistence {
+public class DisciplinaPersistence extends GraphPersistence<Disciplina> {
+
+    public DisciplinaPersistence() {
+        super(Disciplina.class);
+    }
+
+    @Override
+    protected Disciplina buildEntity(Fill primaryKey) {
+        String codigo = primaryKey.getString("codigo");
+        Disciplina disciplina = new Disciplina(codigo);
+        return disciplina;
+    }
 
 }

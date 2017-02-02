@@ -5,7 +5,7 @@
  */
 package br.unioeste.cascavel.avaliacaodocentes.persistence;
 
-import br.unioeste.cascavel.avaliacaodocentes.persistence.Exception.KeyNotFoundException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -36,7 +36,7 @@ public class Fill implements Iterable<Entry<String, Object>> {
     }
 
     public String getString(String key) {
-        return (String) key;
+        return (String) getAttribute(key);
     }
 
     public Fill getFill(String key) {
@@ -44,7 +44,11 @@ public class Fill implements Iterable<Entry<String, Object>> {
     }
 
     public Iterable<Fill> getCollection(String key) {
-        return (Iterable<Fill>) getAttribute(key);
+        Iterable<Fill> collection = (Iterable<Fill>) getAttribute(key);
+        if (collection == null) {
+            return Collections.EMPTY_LIST;
+        }
+        return collection;
     }
 
     public Iterable<Entry<Fill, Fill>> getMap(String key) {
@@ -62,6 +66,5 @@ public class Fill implements Iterable<Entry<String, Object>> {
     public Iterator<Entry<String, Object>> iterator() {
         return this.valores.entrySet().iterator();
     }
-
 
 }
