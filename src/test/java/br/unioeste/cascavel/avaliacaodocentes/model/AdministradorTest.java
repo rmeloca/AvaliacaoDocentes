@@ -25,7 +25,7 @@ public class AdministradorTest {
         InputStream inputStream = getClass().getResourceAsStream("/users.txt");
         AdministradorController administradorController = new AdministradorController();
         try {
-            Administrador administrador = new Administrador("admin");
+            Administrador administrador = new Administrador("admin", "admin", "admin", "admin");
             try {
                 administrador = administradorController.get(administrador);
             } catch (ItemNotFoundException ex) {

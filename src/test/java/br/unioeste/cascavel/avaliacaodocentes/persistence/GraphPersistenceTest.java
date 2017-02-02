@@ -15,7 +15,6 @@ import com.orientechnologies.orient.core.sql.OCommandSQL;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,7 +58,7 @@ public class GraphPersistenceTest {
             System.out.println(retrieve.getNome());
             assertEquals(retrieve, aluno);
             aluno.getMatricula(2012, 1);
-            retrieve.getMatricula(2012, 1);
+//            retrieve.getMatricula(2012, 1);
 
             graphPersistence.delete(aluno);
         } catch (ItemNotFoundException ex) {

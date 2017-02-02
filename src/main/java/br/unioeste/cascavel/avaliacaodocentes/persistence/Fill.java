@@ -52,7 +52,13 @@ public class Fill implements Iterable<Entry<String, Object>> {
     }
 
     public Iterable<Entry<Fill, Fill>> getMap(String key) {
-        Map<Fill, Fill> map = (Map<Fill, Fill>) getAttribute(key);
+        Map<Fill, Fill> attribute = (Map<Fill, Fill>) getAttribute(key);
+        Map<Fill, Fill> map;
+        if (attribute == null) {
+            map = new HashMap<>();
+        } else {
+            map = attribute;
+        }
         Iterable iterable = new Iterable() {
             @Override
             public Iterator iterator() {
